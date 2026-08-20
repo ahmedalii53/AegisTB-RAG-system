@@ -1,0 +1,9 @@
+Question,Expected Source (Document / Section / Page),Found in Top-k? (Y/N),Precision@k,Notes
+"What blood pressure threshold should trigger starting medication for hypertension?","WHO Hypertension Guideline / Recommendation 1: Blood pressure threshold for initiation of pharmacological treatment / Page 3","","",""
+"What are the three recommended first-line drug classes for treating hypertension?","WHO Hypertension Guideline / 3.4 Drug classes to be used as first-line agents / Page 8","","",""
+"What is the target blood pressure for a patient with existing cardiovascular disease?","WHO Hypertension Guideline / 3.6 Target blood pressure / Page 9","","",""
+"How often should a patient be followed up after starting or changing antihypertensive medication?","WHO Hypertension Guideline / 3.7 Frequency of re-assessment / Page 9","","",""
+"Can nurses or pharmacists prescribe antihypertensive treatment?","WHO Hypertension Guideline / 3.8 Administration of treatment by nonphysician professionals / Page 10","","",""
+"Which antihypertensive medications are contraindicated during pregnancy?","WHO Hypertension Guideline / 4.3 Pregnancy and hypertension / Page 10","","",""
+"What is the recommended starting dose in the single-pill combination treatment algorithm?","WHO Hypertension Guideline / 6.2 Drug- and dose-specific protocols / Page 12","","",""
+"What screening interval does this guideline recommend for breast cancer?","Not covered by this source \u2014 expected refusal","","","Out-of-scope control question: source is a hypertension guideline, not a cancer-screening guideline. Use this to confirm your system refuses instead of guessing."

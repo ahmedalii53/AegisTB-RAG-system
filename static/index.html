@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AegisTB — Clinical Decision Support for Tuberculosis</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+  <!-- PDF.js CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <link rel="stylesheet" href="/static/style.css?v=2.5">
+  <link rel="icon" type="image/png" href="/static/logo.png">
+</head>
+<body>
+  <div class="app-container" id="appContainer">
+
+    <!-- Left Vertical Nav Sidebar -->
+    <nav class="left-nav-sidebar" id="leftNavSidebar">
+
+      <!-- Brand: Logo + Name -->
+      <div class="left-nav-brand" onclick="resetToHero()" role="button" title="AegisTB Home">
+        <div class="brand-logo-container">
+          <img src="/static/logo.png" alt="AegisTB Logo" class="brand-logo-img">
+        </div>
+        <div class="brand-text">
+          <h1>AegisTB</h1>
+          <span class="brand-sub">Clinical Decision Support</span>
+        </div>
+      </div>
+
+      <div class="left-nav-divider"></div>
+
+      <!-- Navigation Buttons -->
+      <div class="left-nav-buttons">
+
+        <!-- History Toggle -->
+        <button class="left-nav-btn" onclick="toggleHistorySidebar()" title="Chat History">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+          </svg>
+          <span>History</span>
+          <span class="history-badge-count" id="historyBadgeCount" style="display:none;">0</span>
+        </button>
+
+        <!-- New Query -->
+        <button class="left-nav-btn" id="newChatBtn" onclick="resetToHero()" title="Start New Consultation">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+            <path d="M12 5v14M5 12h14"></path>
+          </svg>
+          <span>New Query</span>
+        </button>
+
+        <!-- Document Viewer Toggle -->
+        <button class="left-nav-btn pdf-toggle-btn" id="togglePdfBtn" onclick="togglePdfPanel()" title="Toggle Document Viewer">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+          </svg>
+          <span>Doc Viewer</span>
+        </button>
+
+        <!-- Info / About -->
+        <button class="left-nav-btn info-nav-btn" onclick="openInfoModal()" title="About AegisTB">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="16" x2="12" y2="12"></line>
+            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+          </svg>
+          <span>Info</span>
+        </button>
+
+      </div>
+
+      <!-- Bottom: Theme Toggle + Status -->
+      <div class="left-nav-footer">
+        <div class="left-nav-divider"></div>
+
+        <!-- Theme Toggle -->
+        <button class="left-nav-btn theme-toggle-btn" id="themeToggleBtn" onclick="toggleTheme()" title="Toggle Dark/Light Theme">
+          <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+          <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+          <span>Theme</span>
+        </button>
+
+        <!-- System Status -->
+        <div class="left-nav-status" id="systemStatus">
+          <span class="status-dot"></span>
+          <span class="status-text">Online</span>
+        </div>
+      </div>
+    </nav>
+
+    <!-- History Sidebar Drawer (Slide-out over workspace) -->
+    <aside class="history-sidebar" id="historySidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-title-row">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18" style="color: var(--brand-cyan);">
+            <path d="M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"></path>
+          </svg>
+          <h3>Saved Consultations</h3>
+        </div>
+        <button class="sidebar-close-btn" onclick="toggleHistorySidebar(false)" title="Close History">✕</button>
+      </div>
+
+      <div class="sidebar-actions-bar">
+        <button class="sidebar-new-btn" onclick="resetToHero(); toggleHistorySidebar(false);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+            <path d="M12 5v14M5 12h14"></path>
+          </svg>
+          <span>New Consultation</span>
+        </button>
+      </div>
+
+      <div class="history-list" id="historyList">
+        <!-- History Items rendered dynamically -->
+        <div class="history-empty" id="historyEmpty">No saved chats yet. Start a consultation!</div>
+      </div>
+    </aside>
+
+    <!-- Sidebar Overlay Backdrop -->
+    <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="toggleHistorySidebar(false)"></div>
+
+    <!-- Main Dynamic Workspace (offset right of left-nav) -->
+    <main class="workspace" id="workspace">
+      
+      <!-- Left / Center Column: Chat & Evidence Stream -->
+      <section class="chat-pane" id="chatPane">
+        
+        <!-- Hero Centered Welcome State -->
+        <div class="hero-center-view" id="heroCenterView">
+          <div class="hero-content">
+            <div class="hero-logo-box">
+              <img src="/static/logo.png" alt="AegisTB Shield" class="hero-logo-img">
+            </div>
+            <h2 class="hero-heading">How can <span class="hero-brand-name">AegisTB</span> assist your clinical decision?</h2>
+            <p class="hero-subtitle">
+              Strictly grounded in official WHO Consolidated Guidelines on Tuberculosis.
+            </p>
+
+            <!-- Hero Centered Search Form -->
+            <form class="hero-search-form" onsubmit="handleHeroSubmit(event)">
+              <div class="hero-input-container">
+                <textarea 
+                  id="heroInput" 
+                  rows="2" 
+                  placeholder="Ask a clinical question (e.g. initial NAAT diagnosis, HIV LF-LAM, 4-month DS-TB regimen)..."
+                  onkeydown="handleHeroKeyDown(event)"></textarea>
+                <button type="submit" class="hero-send-btn" title="Ask AegisTB">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="20" height="20">
+                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                  </svg>
+                </button>
+              </div>
+            </form>
+
+            <!-- 4 Rich Clinical Presets -->
+            <div class="hero-presets-grid">
+              <div class="preset-card" onclick="sendPreset('What is the recommended initial diagnostic test for pulmonary TB in adults?')">
+                <div class="preset-icon">🧬</div>
+                <div class="preset-info">
+                  <span class="preset-title">Initial Diagnostic Test</span>
+                  <span class="preset-desc">Recommended rapid molecular NAATs vs microscopy</span>
+                </div>
+              </div>
+
+              <div class="preset-card" onclick="sendPreset('When should lateral flow urine lipoarabinomannan (LF-LAM) be used for TB diagnosis in people living with HIV?')">
+                <div class="preset-icon">🔬</div>
+                <div class="preset-info">
+                  <span class="preset-title">HIV &amp; LF-LAM Strategy</span>
+                  <span class="preset-desc">Concurrent point-of-care urine biomarker testing</span>
+                </div>
+              </div>
+
+              <div class="preset-card" onclick="sendPreset('What is the standard 6-month first-line treatment regimen for drug-susceptible pulmonary tuberculosis?')">
+                <div class="preset-icon">💊</div>
+                <div class="preset-info">
+                  <span class="preset-title">Standard 6-Month DS-TB</span>
+                  <span class="preset-desc">2HRZE / 4HR dosing and clinical phases</span>
+                </div>
+              </div>
+
+              <div class="preset-card" onclick="sendPreset('What is the 4-month treatment regimen for drug-susceptible tuberculosis and who is eligible?')">
+                <div class="preset-icon">⚡</div>
+                <div class="preset-info">
+                  <span class="preset-title">Short 4-Month Regimen</span>
+                  <span class="preset-desc">2HPMZ / 2HPM Rifapentine-Moxifloxacin regimen</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Active Chat Stream (Visible when conversation starts) -->
+        <div class="chat-history" id="chatHistory" style="display: none;">
+          <!-- Messages will be dynamically rendered here -->
+        </div>
+
+        <!-- Sticky Chat Input Bar (Visible during active conversation) -->
+        <div class="chat-input-wrapper" id="stickyInputWrapper" style="display: none;">
+          <form id="chatForm" onsubmit="handleQuerySubmit(event)">
+            <div class="input-container">
+              <textarea 
+                id="queryInput" 
+                rows="2" 
+                placeholder="Ask a follow-up or new clinical TB question..." 
+                onkeydown="handleKeyDown(event)"></textarea>
+              <button type="submit" id="sendBtn" class="send-button" title="Send query">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" width="18" height="18">
+                  <line x1="22" y1="2" x2="11" y2="13"></line>
+                  <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
+              </button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- Right Column: Interactive Side-by-Side PDF Source Viewer -->
+      <section class="viewer-pane" id="viewerPane">
+        <div class="viewer-header">
+          <div class="viewer-doc-info">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+            </svg>
+            <span id="currentDocTitle">Select a citation to inspect guideline</span>
+          </div>
+
+          <div class="viewer-controls">
+            <button class="viewer-btn" onclick="prevPdfPage()" title="Previous Page">◀</button>
+            <span class="page-indicator">Page <span id="currentPageNum">1</span> / <span id="totalPagesNum">--</span></span>
+            <button class="viewer-btn" onclick="nextPdfPage()" title="Next Page">▶</button>
+            <span class="divider"></span>
+            <button class="viewer-btn" onclick="zoomPdf(0.15)" title="Zoom In">+</button>
+            <button class="viewer-btn" onclick="zoomPdf(-0.15)" title="Zoom Out">-</button>
+            <span class="divider"></span>
+            <button class="viewer-btn viewer-close-btn" onclick="togglePdfPanel(false)" title="Collapse PDF Viewer">✕</button>
+          </div>
+        </div>
+
+        <!-- Active Citation Banner -->
+        <div class="citation-banner" id="citationBanner" style="display: none;">
+          <div class="citation-banner-content">
+            <div class="banner-top-row">
+              <span class="banner-badge">Verified Evidence</span>
+              <span class="banner-section" id="bannerSection">WHO Clinical Section</span>
+            </div>
+            <p class="banner-quote" id="bannerQuote">Evidence excerpt highlighted below</p>
+          </div>
+        </div>
+
+        <!-- PDF Canvas Wrapper with Dynamic Highlight Layer -->
+        <div class="pdf-container" id="pdfContainer">
+          <div class="pdf-wrapper" id="pdfWrapper">
+            <canvas id="pdfCanvas"></canvas>
+            <div class="textLayer" id="pdfTextLayer"></div>
+            <div class="highlightLayer" id="pdfHighlightLayer"></div>
+          </div>
+          
+          <div class="pdf-placeholder" id="pdfPlaceholder">
+            <div class="placeholder-shield">
+              <img src="/static/logo.png" alt="AegisTB Shield" width="64" height="64" style="opacity: 0.85;">
+            </div>
+            <h3>WHO Guideline Source Viewer</h3>
+            <p>Click any citation card on the left to jump directly to the exact page with evidence highlighted in glowing cyan-teal.</p>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Info / About Modal Dialog -->
+    <div class="modal-overlay" id="infoModalOverlay" onclick="closeInfoModal(event)">
+      <div class="modal-card" onclick="event.stopPropagation()">
+        <div class="modal-header">
+          <div class="modal-title-box">
+            <img src="/static/logo.png" alt="AegisTB Logo" class="modal-logo-img">
+            <div>
+              <h3>About AegisTB</h3>
+              <span class="modal-sub">Clinical Decision Support System for Tuberculosis</span>
+            </div>
+          </div>
+          <button class="modal-close-btn" onclick="closeInfoModal()">✕</button>
+        </div>
+
+        <div class="modal-body">
+          <div class="info-section">
+            <h4>🎯 Overview &amp; Objective</h4>
+            <p>
+              <strong>AegisTB</strong> is an AI-powered clinical decision-support platform designed to assist healthcare professionals in diagnosing and treating tuberculosis with <strong>100% evidence-grounded accuracy</strong> strictly adhering to official World Health Organization (WHO) guidelines.
+            </p>
+          </div>
+
+          <div class="info-section">
+            <h4>⚙️ Technical Architecture &amp; Pipeline</h4>
+            <div class="pipeline-flow-box">
+              <span>Retrieval</span> → <span>Hybrid (Dense + BM25)</span> → <span>RRF Fusion</span> → <span>Evidence Selection</span> → <span>Gemini 2.5 Flash</span> → <span>JSON Validation</span> → <span>Interactive PDF Highlighting</span>
+            </div>
+          </div>
+
+          <div class="info-grid">
+            <div class="info-grid-card">
+              <h5>🛡️ Zero-Hallucination Grounding</h5>
+              <p>Gemini is strictly used to synthesize retrieved WHO guidance without fabricating medical doses or unsubstantiated facts.</p>
+            </div>
+            <div class="info-grid-card">
+              <h5>📑 Exact Document Citations</h5>
+              <p>Every clinical answer maps directly to specific document sections and 1-indexed pages with live PDF sentence highlighting.</p>
+            </div>
+            <div class="info-grid-card">
+              <h5>🧬 Molecular Diagnostics (mWRD)</h5>
+              <p>Full support for rapid NAATs (Loopamp MTBC, GeneXpert) and urine biomarker testing (LF-LAM) in PLHIV.</p>
+            </div>
+            <div class="info-grid-card">
+              <h5>💊 Standard &amp; Short Regimens</h5>
+              <p>Covers both 6-month (2HRZE/4HR) and 4-month (2HPMZ/2HPM) drug-susceptible tuberculosis treatment pathways.</p>
+            </div>
+          </div>
+
+          <div class="info-section">
+            <h4>📚 Indexed WHO Guideline Corpus</h4>
+            <ul class="info-guidelines-list">
+              <li><strong>WHO Consolidated Guidelines on Tuberculosis — Module 3: Diagnosis</strong> (Rapid molecular diagnostics, NAATs, LF-LAM).</li>
+              <li><strong>WHO Consolidated Guidelines on Tuberculosis — Module 4: Treatment and Care</strong> (Drug-susceptible TB, 6-month &amp; 4-month regimens, monitoring).</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <span class="modal-footer-note">AegisTB • Developed for Clinical Decision Support</span>
+          <button class="modal-btn-primary" onclick="closeInfoModal()">Got it</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="/static/app.js?v=2.5"></script>
+</body>
+</html>

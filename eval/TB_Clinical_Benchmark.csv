@@ -1,0 +1,8 @@
+Question,Category,Expected Source (Document / Section / Page),Expected Behavior,Notes
+"What is the recommended initial diagnostic test for pulmonary TB in adults?",Diagnosis,"Module 3 Diagnosis / Initial tests for TB diagnosis / Rapid molecular tests","Answer with citation (mWRD)","Tests initial rapid diagnostic recommendation"
+"When should lateral flow urine lipoarabinomannan (LF-LAM) be used to diagnose TB in people living with HIV?",HIV Diagnosis,"Module 3 Diagnosis / LF-LAM / People living with HIV","Answer with citation (PLHIV/CD4)","Tests sub-population specific diagnostic recommendation"
+"What is the standard 6-month first-line treatment regimen for drug-susceptible pulmonary tuberculosis?",DS-TB Treatment,"Module 4 Treatment and care / Drug-susceptible TB treatment / 6-month regimen","Answer with citation (2HRZE/4HR)","Tests standard first-line regimen"
+"What is the 4-month regimen for drug-susceptible tuberculosis?",DS-TB Treatment,"Module 4 Treatment and care / Drug-susceptible TB treatment / 4-month regimens","Answer with citation (2HPMZ/2HPM)","Tests 4-month rifapentine regimen"
+"What is the recommended screening interval for breast cancer in average-risk women?",Refusal / Out-of-Scope,"Not covered by WHO TB guidelines","Refuse with insufficient evidence","Tests out-of-scope question refusal"
+"What blood pressure target is recommended for hypertensive patients?",Refusal / Out-of-Scope,"Not covered by WHO TB guidelines","Refuse with insufficient evidence","Tests domain confinement"
+"How should tuberculosis be diagnosed and treated according to WHO guidelines?",Broad Query,"Module 3 & Module 4","Synthesized answer citing both modules","Tests multi-document synthesis"
